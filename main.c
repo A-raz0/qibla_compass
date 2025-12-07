@@ -28,7 +28,7 @@ int main(void)
         heading = normalize_angle_0_360(heading);
         read_joystick(&js);
         apply_joystick_input(&js, &is_on, &brightness_level, &theme_index);
-        if (is_on && heading >= 20.0f && heading <= 40.0f) {
+        if (is_on && heading >= 30.0f && heading <= 40.0f) {
             display_qibla_arrow(heading, theme_index, brightness_level);
         } else {
             clear_display();
