@@ -65,15 +65,21 @@ void clear_display(void)
         clearFrameBuffer(fb, 0x0000);
     }
 }
+
 typedef struct {
     int x;
     int y;
 } Pixel;
 
 static const Pixel ARROW_UP_PIXELS[] = {
-    {3, 1}, {3, 2}, {3, 3}, {3, 4},
-    {2, 2}, {4, 2},
-    {1, 3}, {5, 3}
+                 {3, 0},
+         {4, 1}, {3, 1}, {2, 1},
+         {5, 2}, {3, 2}, {1, 2},
+         {6, 3}, {3, 3}, {0, 3},
+                 {3, 4},
+                 {3, 5},
+                 {3, 6}
+
 };
 static const int ARROW_UP_COUNT = (int)(sizeof(ARROW_UP_PIXELS) / sizeof(Pixel));
 
@@ -97,9 +103,11 @@ static const Pixel ARROW_DOWN_RIGHT_PIXELS[] = {
 static const int ARROW_DOWN_RIGHT_COUNT = (int)(sizeof(ARROW_DOWN_RIGHT_PIXELS) / sizeof(Pixel));
 
 static const Pixel ARROW_DOWN_PIXELS[] = {
-    {3, 3}, {3, 4}, {3, 5}, {3, 6},
-    {2, 4}, {4, 4},
-    {1, 5}, {5, 5}
+    {3, 2}, {4, 2},
+    {3, 3}, {4, 3},
+    {3, 4}, {4, 4},
+    {2, 5}, {3, 5}, {4, 5}, {5, 5},
+    {3, 6}, {4, 6}
 };
 static const int ARROW_DOWN_COUNT = (int)(sizeof(ARROW_DOWN_PIXELS) / sizeof(Pixel));
 
@@ -132,6 +140,7 @@ typedef enum {
     DIR_LEFT,
     DIR_UP_LEFT
 } Direction;
+
 static const Pixel *get_arrow_pixels(Direction dir, int *count_out)
 {
     switch (dir) {
@@ -184,7 +193,6 @@ static Direction angle_to_direction(float relative_angle)
         return DIR_UP_LEFT;
     }
 }
-
 static uint16_t make_color(int r5, int g6, int b5)
 {
     if (r5 < 0) r5 = 0;
@@ -196,6 +204,7 @@ static uint16_t make_color(int r5, int g6, int b5)
 
     return (uint16_t)((r5 << 11) | (g6 << 5) | b5);
 }
+
 static void get_base_theme_components(int theme_index,
                                       int *arrow_r5, int *arrow_g6, int *arrow_b5,
                                       int *bg_r5, int *bg_g6, int *bg_b5)
@@ -218,10 +227,7 @@ static void get_base_theme_components(int theme_index,
     case 2:
         *arrow_r5 = 0;
         *arrow_g6 = 0;
-        *arrow_b5 = 0;
-        *bg_r5 = 24;
-        *bg_g6 = 48;
-        *bg_b5 = 24;
+        *arrow_b5 = 31;
         break;
     case 3:
         *arrow_r5 = 31;
@@ -235,6 +241,7 @@ static void get_base_theme_components(int theme_index,
         break;
     }
 }
+
 static void scale_brightness(int brightness_level,
                              int base_r5, int base_g6, int base_b5,
                              int *out_r5, int *out_g6, int *out_b5)
@@ -245,10 +252,12 @@ static void scale_brightness(int brightness_level,
     if (brightness_level > BRIGHTNESS_MAX) {
         brightness_level = BRIGHTNESS_MAX;
     }
+
     *out_r5 = (base_r5 * brightness_level) / BRIGHTNESS_MAX;
     *out_g6 = (base_g6 * brightness_level) / BRIGHTNESS_MAX;
     *out_b5 = (base_b5 * brightness_level) / BRIGHTNESS_MAX;
 }
+
 void display_qibla_arrow(float heading_degrees,
                          int theme_index,
                          int brightness_level)
@@ -281,6 +290,7 @@ void display_qibla_arrow(float heading_degrees,
     while (qibla >= 360.0f) {
         qibla -= 360.0f;
     }
+
     relative_angle = qibla - heading_degrees;
 
     while (relative_angle > 180.0f) {
@@ -310,14 +320,10 @@ void display_qibla_arrow(float heading_degrees,
     if (pixels == NULL) {
         return;
     }
+
     for (i = 0; i < count; i++) {
         int x = pixels[i].x;
         int y = pixels[i].y;
-
-        if (theme_index == 2) {
-            set_pixel(x, y, make_color(0, 0, 0));
-        } else {
-            set_pixel(x, y, arrow_color);
-        }
+        set_pixel(x, y, arrow_color);
     }
 }

@@ -1,7 +1,7 @@
 #ifndef PROJECT_H
 #define PROJECT_H
 #include <stdint.h>
-#define QIBLA_BEARING_DEGREES 48.0f // aprox degrees od qibla from me
+#define QIBLA_BEARING_DEGREES 35.0f // aprox degrees od qibla from me
 #define BRIGHTNESS_MIN 1
 #define BRIGHTNESS_MAX 5
 #define BRIGHTNESS_DEFAULT 3

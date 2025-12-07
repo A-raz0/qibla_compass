@@ -19,18 +19,16 @@ int main(void)
     int brightness_level = BRIGHTNESS_DEFAULT;
     int theme_index = 0;
     JoystickState js;
+
     open_input();
     open_display();
 
     while (1) {
         float heading = get_compass_heading_degrees();
         heading = normalize_angle_0_360(heading);
-
         read_joystick(&js);
-
         apply_joystick_input(&js, &is_on, &brightness_level, &theme_index);
-
-        if (is_on) {
+        if (is_on && heading >= 20.0f && heading <= 40.0f) {
             display_qibla_arrow(heading, theme_index, brightness_level);
         } else {
             clear_display();
@@ -42,3 +40,4 @@ int main(void)
 
     return 0;
 }
+
